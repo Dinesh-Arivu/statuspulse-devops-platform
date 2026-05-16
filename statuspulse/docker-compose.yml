@@ -1,0 +1,57 @@
+version: '3.9'
+
+services:
+
+  app:
+    build: .
+    container_name: statuspulse-app
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      retries: 5
+    mem_limit: 512m
+    networks:
+      - statuspulse-network
+
+  postgres:
+    image: postgres:15
+    container_name: statuspulse-postgres
+    environment:
+      POSTGRES_DB: statuspulse
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      retries: 5
+    mem_limit: 512m
+    networks:
+      - statuspulse-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: statuspulse-redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      retries: 5
+    mem_limit: 256m
+    networks:
+      - statuspulse-network
+
+volumes:
+  postgres_data:
+
+networks:
+  statuspulse-network:
