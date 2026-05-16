@@ -7,11 +7,11 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends gcc=4:11.2.0-2ubuntu1 libpq-dev=15.3-1 && \
     rm -rf /var/lib/apt/lists/*
 
-COPY app/requirements.txt .
+COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY app .
+COPY . .
 
 # Runtime stage
 FROM python:3.11-slim
