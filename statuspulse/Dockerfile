@@ -35,4 +35,4 @@ EXPOSE 8000
 
 HEALTHCHECK CMD curl --fail http://localhost:8000/health || exit 1
 
-CMD ["gunicorn", "-w", "1", "-k", "uvicorn.workers.UvicornWorker", "main:app", "--bind", "0.0.0.0:8000"]
+CMD ["gunicorn", "-w", "1", "-k", "uvicorn.workers.UvicornWorker", "main:app", "--bind", "0.0.0.0:8000"]  
